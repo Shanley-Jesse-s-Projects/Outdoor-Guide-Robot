@@ -1,6 +1,7 @@
 #function to read magnetometer over I2C
 #returns unfiltered xyz
 #address is 0x1e
+#requires adafruit_lis2mdl libbrary
 
 import time
 import board
