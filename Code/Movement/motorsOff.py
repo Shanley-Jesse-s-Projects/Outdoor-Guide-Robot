@@ -1,4 +1,5 @@
 #Motor Overide for glitches and motor emergency stop
+#primarily used to deal with the GPIO pins resetting 
 # This example sends commands to two motors on the appropriate pins for H-bridge
 # Designed for Pi hardware.
 
