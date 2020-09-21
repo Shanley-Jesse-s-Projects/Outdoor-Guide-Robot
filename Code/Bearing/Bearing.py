@@ -27,10 +27,16 @@ class Bearing(object):
 
         #set target point as the point within dest that is the shortest distance away
         self.target = Destinations[dest][lengths.index(min(lengths))]
-        del lengths #delete to save some memory
-
+        del lengths #delete to save some memory, probably not even necessary
         self.directions = findDir(self.currentLoc, self.target)
         self.currentWaypt = 0   #to track index number of current waypt
+
+        #check through received waypts and insure they're not in NoGo zones
+        #if they are, reroute them to nearby okay zone
+        for pt in self.directions.waypts:
+            for zone in NoGo:
+                if pt.within(zone['Polygon']):
+                    pt = self.closestPnt(pt,zone['Reroute2'])
 
     #return direction (0-360degrees) to aim at to reach destination
     def getBearing(self):
@@ -104,3 +110,5 @@ class Bearing(object):
         del self.directions
 
 #if __name__ == "__main__":
+
+
