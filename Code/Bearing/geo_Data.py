@@ -23,10 +23,11 @@ Spence_NE = LineString([(30.618296, -96.338668),(30.618758, -96.339072),(30.6188
 #Test point for Ross/Spence
 Pnt_on_Spence_and_Ross = Point(30.619022, -96.339357)
 
-#Array of No-Go zones to be iterated through
-NoGo = []
-NoGo.append(Ross_St)
-NoGo.append(Spence_St)
+#Dictionary of No-Go zones to be iterated through
+NoGo = {
+    'Ross_St': {'Polygon': Ross_St,'Reroute2':Ross_S},
+    'Spence_St': {'Polygon': Spence_St, 'Reroute2':Spence_NE}
+    }
 
 #Fermier Entrances
 FERM_SE = Point(30.616757, -96.341671)
