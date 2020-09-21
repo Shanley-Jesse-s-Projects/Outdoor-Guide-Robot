@@ -1,21 +1,22 @@
 #Author: Evan Maraist
 #Email: emaraist1357@gmail.com
 #Team BAST - ESET Capstone Project 2020
-import findDir
+from findDir import findDir
 from geo_Data import *
 from shapely.geometry import Point, Polygon, LineString
 import math
-#import GPS
-#import magnetometer
+from Hologram.HologramCloud import Hologram
 
 #Insure findDir, geo_Data, GPS, and magnetometer custom files are installed
 #Insure Shapely library is installed
 
-class Bearing:
-    #class receives destination building code
+class Bearing(object):
+    #'dest' is TAMU defined building name acronym
+    #initialization method receives target building acronym and finds its closest entrance
+    #init then calls API to get waypts between current location and destination
     def __init__(self, dest):
-        #self.currentLoc = shapely point of gps
-
+        self.getLoc()
+        self.arrived = False
         #find closest entrance to target building
         lengths = [] #list to hold distances
         for i in Destinations[dest]:
@@ -26,9 +27,10 @@ class Bearing:
 
         #set target point as the point within dest that is the shortest distance away
         self.target = Destinations[dest][lengths.index(min(lengths))]
-        del lengths
+        del lengths #delete to save some memory
 
-        directions = findDir(self.currentLoc, self.target)
+        self.directions = findDir(self.currentLoc, self.target)
+        self.currentWaypt = 0   #to track index number of current waypt
 
     #return direction (0-360degrees) to aim at to reach destination
     def getBearing(self):
@@ -48,11 +50,11 @@ class Bearing:
         line = LineString([x, pnt])
         return line.length
 
-    # find closest point on a line to a point outside of it
+    # find closest point  on a line to a point outside of it
     def closestPnt(self, point, line):
         return line.interpolate(line.project(point))
 
-    # determine if a point is in a NoGo zone
+    # determine if a point (pnt) is in a NoGo zone
     def isNoGo(self, pnt):
         # Array of NoGo zones point is within
         y = []
@@ -67,5 +69,38 @@ class Bearing:
         else:
             return False
 
+    #get current GPS coordinates from Nova
+    def getLoc(self):
+        close = False
+        # loop until a close enough value is found
+        while (close == False):
+            location = hologram.network.location
+            # wait for a location to be received
+            if location is None:
+                while (location is None):
+                    location = hologram.network.location
+            # only return a value if its within max of 3m
+            if location.uncertainty < 3:
+                close = True
+                self.currentLoc = [location.latitude, location.longitude]
 
+    #check if current position is within 1.5m of destination
+    def checkWaypt(self):
+        #0.000135 degrees is equal to 1.5 meters
+        x1 = self.directions.waypts[self.currentWaypt].x - 0.000135
+        y1 = self.directions.waypts[self.currentWaypt].y - 0.000135
+        x2 = self.directions.waypts[self.currentWaypt].x + 0.000135
+        y2 = self.directions.waypts[self.currentWaypt].y + 0.000135
+        #check if current location is within 1.5m
+        if x1<=self.currentLoc[0]<=x2 and y1<=self.currentLoc[1]<=y2:
+            #if it is, increment to next waypt
+            self.currentWaypt = self.currentWaypt + 1
+        #if current index exceeds length of direction waypts, you have arrived
+        if self.currentWaypt > len(self.directions.waypts):
+            self.arrived = True
 
+    #cleans up created objects to prevent memory leak
+    def cleanUp(self):
+        del self.directions
+
+#if __name__ == "__main__":
