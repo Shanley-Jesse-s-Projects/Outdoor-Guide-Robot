@@ -16,12 +16,17 @@ import L2_speed_control as sc
 import L2_inverse_kinematics as inv
 from Bearing import Bearing
 import ObstacleAvoidance as oba
+import multiprocessing
 
 class movement:
     #initializes movement object with 'dest' as goal
-    def __init__(self,dest):
+    #m2s (motor-to-speech) is queue to pass speech process information
+    #s2m (speech-to-motor) is queue to receive information from speach
+    def __init__(self,dest,m2s,s2m):
         self.dest = dest
         self.current = Bearing(self.dest)
+        self.m2s = m2s
+        self.s2m = s2m
         #initialize variables for control system
         self.t0 = 0
         self.t1 = 1
@@ -38,10 +43,11 @@ class movement:
         self.current.checkWaypt()
         if self.current.arrived == True:
             self.stop()
-            return
+            self.m2s.put("Arrived")
         self.targetBearing = self.current.getBearing()
 
-    def stop(self):  # stops motors
+    # stops motors
+    def stop(self):
         # needs condition:
         speeds = [0, 0]
         sc.driveOpenLoop(speeds)
@@ -79,6 +85,9 @@ class movement:
 
     def cleanUp(self):
         self.current.cleanUp()
+        #clear out queue
+        while not self.s2m.empty():
+            self.s2m.get()
         del self.current
 
 if __name__ == "__main__":
