@@ -1,16 +1,18 @@
-#to run this code you will need internet connection
-#if running for the first time pip install SpeechRecognition
-#if running for the first time pip install pyaudio
-#make sure the correct microphone is selected run sudo raspi-config, then select advanced, then mic
-#the purpose of this code is to go through the valid user inputs for building input
+# to run this code you will need internet connection
+# if running for the first time pip install SpeechRecognition
+# if running for the first time pip install pyaudio
+# make sure the correct microphone is selected run sudo raspi-config, then select advanced, then mic
+# the purpose of this code is to go through the valid user inputs for building input
 import os
 import speech_recognition as sr
 
-#these are needed for speech recognition and microphone input
+# these are needed for speech recognition and microphone input
+global r
+global talk
 r = sr.Recognizer()
 talk = sr.Microphone(device_index=None)
 
-#these dictonaries hold valid building destinations for VALE
+# these dictonaries hold valid building destinations for VALE
 
 AC = {'academic building', 'the academic building'}
 
@@ -19,102 +21,156 @@ FER = {'fermier', 'premier', 'premiere', 'Vermeer'}
 TH = {'Thompson'}
 
 ZE = {'Zachary engineering education complex', 'Zachary',
-        'Zach', 'Zachary engineering complex'}
+      'Zach', 'Zachary engineering complex'}
 
 AD = {'administrative building'}
 
-#this is the function that gets speech input
-def speech_talk(r, talk):
+
+# this is the function that gets speech input
+def speech2text(r, talk):
     with talk as source:
         print("say something!…")
         audio = r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
     try:
-        recog = r.recognize_google(audio, language = 'en-US')
+        recog = r.recognize_google(audio, language='en-US')
         print(recog)
         return recog
     except sr.UnknownValueError:
         print("Google Speech Recognition could not understand audio")
     except sr.RequestError as e:
         print("Could not request results from Google Speech Recognition service; {0}".format(e))
-#this is where the first input it asked
-def speech_rec(r, talk):
-    speech = str('Welcome to VALE the autonomous guidebot of the future! Please input the entirety of the building name you would like to go to.'
-                   'If you need to stop at any point please say stop and say go when vale can resume. Where would you like to go?')
-    os.system("echo \"" + speech + "\" | festival --tts")
-    return
 
-#return building code for the API search
-def check_word(speech):
+
+# this is where the first input it asked
+def begin():
+    speech = str(
+        'Welcome to VALE the autonomous guidebot of the future! Please state name of the building you would like to go to.'
+        'If you need to stop at any point please say stop and say go when vale can resume.')
+    os.system("echo \"" + speech + "\" | festival --tts")
+
+#method to make Vale say something
+def say(speech):
+    os.system("echo \"" + speech + "\" | festival --tts")
+
+# return building code for the API search
+def check_bldg(speech, goal, mission):
     if speech in AC:
         ACAD = str('ACAD')
         print(ACAD)
-        return ACAD
+        say("Did you want to go to " + AC[0])
+        if yes_no():
+            say("Proceeding to " + AC[0] + " please follow me.")
+            goal = "ACAD"
+            mission = True
 
     if speech in FER:
         FERM = str('FERM')
         print(FERM)
-        return FERM
+        say("Did you want to go to " + FER[0])
+        if yes_no():
+            say("Proceeding to " + FER[0] + " please follow me.")
+            goal = "FERM"
+            mission = True
 
     if speech in TH:
         THOM = str('THOM')
         print(THOM)
-        return THOM
+        say("Did you want to go to " + TH[0])
+        if yes_no():
+            say("Proceeding to " + TH[0] + " please follow me.")
+            goal = "THOM"
+            mission = True
 
     if speech in ZE:
         ZEEC = str('ZEEC')
         print(ZEEC)
-        return ZEEC
+        say("Did you want to go to " + ZE[0])
+        if yes_no():
+            say("Proceeding to " + ZE[0] + " please follow me.")
+            goal = "ZEEC"
+            mission = True
 
     if speech in AD:
         ADMM = str('ADMM')
         print(ADMM)
-        return ADMM
+        say("Did you want to go to " + AD[0])
+        if yes_no():
+            say("Proceeding to " + AD[0] + " please follow me.")
+            goal = "ADMM"
+            mission = True
 
     else:
         print('not valid')
-   
-#checks to make sure the user input is valid
+
+# checks if a user has said "Hey vale"
+def hey_Vale(speech):
+    hey_checker = {"hey", "hay"}
+    Vale_checker = {"veil", "vale", }
+    if speech in hey_checker and speech in Vale_checker:
+        return True
+    else:
+        return False
+
+# checks to make sure the user input is valid
 def user_input(speech):
-    check = {"the academic building", "academic building", "Zachary", "premiere", "fermier",
+    building_check = {"the academic building", "academic building", "Zachary", "premiere", "fermier",
              "Fermier", "Zachary engineering building", "Thompson", "Zachary engineering complex", "Zach", "Vermeer"
              }
     why = speech
     if speech in check:
-            question = str('Did you want to go to the')
-            print("PO date")
-            q =str('Say yes or no.')
-            os.system("echo \"" + question + why + q + "\" | festival --tts")
-            yes_no()
+        question = str('Did you want to go to the')
+        q = str('Say yes or no.')
+        os.system("echo \"" + question + why + q + "\" | festival --tts")
+        yes_no()
     else:
-            speech = str('Input something else')
-            os.system("echo \"" + speech + "\" | festival --tts")
-            return
-#this is the function for yes or no input        
-def yes_no():   
-    speech = speech_talk(r, talk)
-    if speech == 'yes':
-            s = str('ok follow me')
-            os.system("echo \"" + s + "\" | festival --tts")
-            check_word(speech)
-            #put in driving here
-            
-    else:
-            s = str('Input something else')
-            os.system("echo \"" + s + "\" | festival --tts")
-            return
+        speech = str('Invalid input.')
+        os.system("echo \"" + speech + "\" | festival --tts")
+        return
 
-def reroute():  #reroutes gps
+#checks if the user has inputted a command to Vale
+def command_check(speech):
+    commands_check = {"stop", "go", "resume", "change", "reroute","off","deactivate"}
+    if speech in check:
+        say("Command received.")
+        if speech in "stop":
+            # stop motor
+            say("Stoppping.")
+            return "stop"
+        if speech in "go" or speech in "resume":
+            # resume travel
+            say("Resuming travel.")
+            return "resume"
+        if speech in "change" or speech in "reroute":
+            # change destination
+            say("One moment. Cleaning out old navigation data.")
+            return "reroute"
+        if speech in "end" or speech in "done":
+            # user is done with travel
+            say("Vale was happy to guide you. Have a pleasant day.")
+            return "end"
+        if speech in "off" or speech in "deactivate":
+            # cancel movement and turn off Vale
+            say("Deactivating. Thank you for using the Vale autonomous guide!")
+            return "deactivate"
+    else:
+        say("Invalid input.")
+
+# this is the function for yes or no input
+def yes_no():
+    speech = speech2text(r, talk)
+    if speech == 'yes' or speech == 'yeah':
+        return True
+    else:
+        return False
+
+def reroute():  # reroutes gps
     s = str('Rerouting, please wait')
     os.system("echo \"" + s + "\" | festival --tts")
-            
 
-speech = speech_rec(r, talk)
-#uncomment this loop for continous running
-while(1):
-    speech = speech_talk(r, talk)
-    #speech is the user input
-    user_input(speech)
 
-        
-   
+if __name__ == '__main__':
+    while(1):
+        speech = speech2text(r, talk)
+        # speech is the user input
+        user_input(speech)
