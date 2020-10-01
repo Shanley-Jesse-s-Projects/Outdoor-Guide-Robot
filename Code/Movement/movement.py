@@ -22,9 +22,10 @@ class movement:
     #initializes movement object with 'dest' as goal
     #m2s (motor-to-speech) is queue to pass speech process information
     #s2m (speech-to-motor) is queue to receive information from speach
-    def __init__(self,dest,m2s,s2m):
+    def __init__(self,dest,m2m, m2s,s2m):
         self.dest = dest
         self.current = Bearing(self.dest)
+        self.m2m = m2m
         self.m2s = m2s
         self.s2m = s2m
         #initialize variables for control system
@@ -37,13 +38,27 @@ class movement:
         self.de_dt = np.zeros(2)  # initialize the de_dt
         self.count = 0
 
+    #looks to see if the s2t has sent anything
+    def checkQueue(self):
+        got = None
+        if self.s2m.empty() is False:
+            got = self.s2m.get()
+        if got == 'STOP':
+            self.stop()
+            return 'STOP'
+        if got == 'RESUME':
+            return 'RESUME'
+        if got == 'END':
+            return 'END'
+
+
     #updates current location, checks if waypt has been reached, updates target bearing
     def updateGeo(self):
         self.current.getLoc()
         self.current.checkWaypt()
         if self.current.arrived == True:
             self.stop()
-            self.m2s.put("Arrived")
+            self.m2s.put("ARRIVED")
         self.targetBearing = self.current.getBearing()
 
     # stops motors
@@ -85,12 +100,12 @@ class movement:
 
     def cleanUp(self):
         self.current.cleanUp()
-        #clear out queue
+        #clears out queue
         while not self.s2m.empty():
             self.s2m.get()
+        #deletes bearing object from memory
         del self.current
 
 if __name__ == "__main__":
-
     while (1):
         launch()
