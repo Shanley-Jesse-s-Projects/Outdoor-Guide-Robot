@@ -58,7 +58,8 @@ class movement:
         self.current.checkWaypt()
         if self.current.arrived == True:
             self.stop()
-            self.m2s.put("ARRIVED")
+            self.m2s.put('ARRIVED')
+            self.m2m.put('ARRIVED')
         self.targetBearing = self.current.getBearing()
 
     # stops motors
@@ -74,7 +75,7 @@ class movement:
         currentHeading = heading.whereismyHead()  # gets the direction the robot is facing
         print(currentHeading)
         thetaOffset = self.targetBearing - currentHeading  # calculates theta offset (the difference between the heading and the direction of intention)
-        print("offset: ", thetaOffset)
+        print('offset: ', thetaOffset)
         myThetaDot = thetaOffset * 3.14 / 180 * 4  # attempt centering in 0.5 seconds
 
         print(myThetaDot)
@@ -106,6 +107,6 @@ class movement:
         #deletes bearing object from memory
         del self.current
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     while (1):
         launch()
