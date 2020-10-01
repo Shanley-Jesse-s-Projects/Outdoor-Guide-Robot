@@ -50,12 +50,12 @@ def user_interface(s2main,s2move,m2s ): # listen for user input and react
     while Keep_Going is not False:
         status = m2s.get()
         if status == 'ARRIVED': #Vale has arrived at destination
-            say("We have arrived. Thank you for using Vale.")
+            say('We have arrived. Thank you for using Vale.')
             break
-        #listen for "Hey Vale"
+        #listen for 'Hey Vale'
         speech = speech2text(r, talk)
         if hey_Vale(speech) is True: #User wants to issue input
-            say("Hey User")
+            say('Hey User')
             s2move.put('STOP')
             listening = True
             while listening is True: # listen for orders
@@ -78,7 +78,7 @@ def user_interface(s2main,s2move,m2s ): # listen for user input and react
                     Keep_Going = False
 
 #main code
-if __name__ == "__main__":
+if __name__ == '__main__':
     #connect to internet via Nova
     connect()
 
@@ -98,14 +98,14 @@ if __name__ == "__main__":
     while run == True:
 
         #request instructions
-        say("The Vale autonomous guide is ready to begin guidance.")
+        say('The Vale autonomous guide is ready to begin guidance.')
 
         #Receive instructions
         have_job = False
         target_Bldg = None
         while have_job == False: #loop until user has input instructions
             speech = speech2text(r, talk)
-            if hey_Vale(speech): #if user says "Hey vale"
+            if hey_Vale(speech): #if user says 'Hey vale'
                 while target_Bldg == None:
                     speech = speech2text(r, talk)
                     check_bldg(speech,have_job,target_Bldg)
@@ -126,10 +126,10 @@ if __name__ == "__main__":
             got = None
             if speech_to_main.empty() is False: #read from speech queue
                 got = speech_to_main.get()
-                if got == "DEACTIVATE":
+                if got == 'DEACTIVATE':
                     El_dorado = False
                     run = False
-                if got == "REROUTE": # user requested to change directions
+                if got == 'REROUTE': # user requested to change directions
                     EL_dorado = False
             if move_to_main.empty is False: # read from move queue
                 got = speech_to_main.get()
