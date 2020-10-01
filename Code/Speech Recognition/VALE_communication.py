@@ -63,7 +63,6 @@ def check_bldg(speech, goal, mission):
             say("Proceeding to " + AC[0] + " please follow me.")
             goal = "ACAD"
             mission = True
-
     if speech in FER:
         FERM = str('FERM')
         print(FERM)
@@ -72,7 +71,6 @@ def check_bldg(speech, goal, mission):
             say("Proceeding to " + FER[0] + " please follow me.")
             goal = "FERM"
             mission = True
-
     if speech in TH:
         THOM = str('THOM')
         print(THOM)
@@ -81,7 +79,6 @@ def check_bldg(speech, goal, mission):
             say("Proceeding to " + TH[0] + " please follow me.")
             goal = "THOM"
             mission = True
-
     if speech in ZE:
         ZEEC = str('ZEEC')
         print(ZEEC)
@@ -90,7 +87,6 @@ def check_bldg(speech, goal, mission):
             say("Proceeding to " + ZE[0] + " please follow me.")
             goal = "ZEEC"
             mission = True
-
     if speech in AD:
         ADMM = str('ADMM')
         print(ADMM)
@@ -99,7 +95,6 @@ def check_bldg(speech, goal, mission):
             say("Proceeding to " + AD[0] + " please follow me.")
             goal = "ADMM"
             mission = True
-
     else:
         print('not valid')
 
@@ -109,6 +104,7 @@ def hey_Vale(speech):
     Vale_checker = {"veil", "vale", }
     if speech in hey_checker and speech in Vale_checker:
         return True
+        say("Hey User")
     else:
         return False
 
@@ -137,22 +133,27 @@ def command_check(speech):
             # stop motor
             say("Stoppping.")
             return "stop"
+
         if speech in "go" or speech in "resume":
             # resume travel
             say("Resuming travel.")
             return "resume"
+
         if speech in "change" or speech in "reroute":
             # change destination
             say("One moment. Cleaning out old navigation data.")
             return "reroute"
+
         if speech in "end" or speech in "done":
             # user is done with travel
             say("Vale was happy to guide you. Have a pleasant day.")
             return "end"
+
         if speech in "off" or speech in "deactivate":
             # cancel movement and turn off Vale
             say("Deactivating. Thank you for using the Vale autonomous guide!")
             return "deactivate"
+
     else:
         say("Invalid input.")
 
@@ -168,9 +169,10 @@ def reroute():  # reroutes gps
     s = str('Rerouting, please wait')
     os.system("echo \"" + s + "\" | festival --tts")
 
-
 if __name__ == '__main__':
     while(1):
         speech = speech2text(r, talk)
         # speech is the user input
         user_input(speech)
+
+
