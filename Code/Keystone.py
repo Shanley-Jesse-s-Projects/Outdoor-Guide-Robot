@@ -3,13 +3,11 @@
 #TEAM BAST - ESET 420 Capstone
 
 from Hologram.HologramCloud import Hologram
-credentials = {'devicekey': ''}
 from multiprocessing import Process, Queue
 from VALE_communication import *
-#import VALE_communication
 import signal
 from contextlib import contextmanager
-from movement import movement
+from movement import movement as move_class
 
 #Connect to internet via Nova hologram
 def connect():
@@ -19,7 +17,7 @@ def connect():
 
 #this process will be responsible for moving Vale to its destination
 def movement(dest, m2m, m2s, s2m):
-    current = movement(dest,m2m, m2s,s2m) #initialize movement object
+    current = move_class(dest,m2m, m2s,s2m) #initialize movement object
     Keep_Going = True
     while Keep_Going is not False: #run until Vale arrives at target or is told to stop
         # Check speech-to-motor queue, see if any orders were received
@@ -43,6 +41,7 @@ def movement(dest, m2m, m2s, s2m):
     # if we've exited the while loop that means we're not moving anymore
     current.stop() # make sure motors have stopped
     current.cleanUp() # delete created objects, save memory
+    print("Motor thread ended.")
 
 #this process will be responsible for listening to a user's input
 def user_interface(s2main,s2move,m2s ): # listen for user input and react
@@ -76,6 +75,7 @@ def user_interface(s2main,s2move,m2s ): # listen for user input and react
                     s2main.put('DEACTIVATE')
                     listening = False
                     Keep_Going = False
+    print("UI thread ended.")
 
 #main code
 if __name__ == '__main__':
@@ -105,12 +105,10 @@ if __name__ == '__main__':
         target_Bldg = None
         while have_job == False: #loop until user has input instructions
             speech = speech2text(r, talk)
-            if hey_Vale(speech): #if user says 'Hey vale'
-                while target_Bldg == None:
+            if hey_Vale(speech) == True: #if user says 'Hey vale'
+                while target_Bldg == None: #until user inputs correct building name
                     speech = speech2text(r, talk)
-                    check_bldg(speech,have_job,target_Bldg)
-                    print(have_job)
-                    print(target_Bldg)
+                    target_Bldg, have_job = check_bldg(speech,have_job,target_Bldg)
 
         #Instructions received, create and initialize threads
         ui = Process(target= user_interface, args=(speech_to_main, speech_to_move, move_to_speech))
