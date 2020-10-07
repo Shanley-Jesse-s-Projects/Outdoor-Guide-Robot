@@ -55,54 +55,65 @@ def say(speech):
 
 # return building code for the API search
 def check_bldg(speech, goal, mission):
-    if speech in AC:
+    if any(sub in speech for sub in AC):
         ACAD = str('ACAD')
         print(ACAD)
         say('Did you want to go to ' + AC[0])
-        if yes_no():
+        check = yes_no()
+        if check == True:
             say('Proceeding to ' + AC[0] + ' please follow me.')
-            goal = 'ACAD'
-            mission = True
-    if speech in FER:
+            return 'ACAD', True
+        else:
+            return None, False
+    elif any(sub in speech for sub in FER):
         FERM = str('FERM')
         print(FERM)
         say('Did you want to go to ' + FER[0])
-        if yes_no():
+        check = yes_no()
+        if check == True:
             say('Proceeding to ' + FER[0] + ' please follow me.')
-            goal = 'FERM'
-            mission = True
-    if speech in TH:
+            return 'FERM', True
+        else:
+            return None, False
+    elif any(sub in speech for sub in TH):
         THOM = str('THOM')
         print(THOM)
         say('Did you want to go to ' + TH[0])
-        if yes_no():
+        check = yes_no()
+        if check == True:
             say('Proceeding to ' + TH[0] + ' please follow me.')
-            goal = 'THOM'
-            mission = True
-    if speech in ZE:
+            return 'THOM', True
+        else:
+            return None, False
+    elif any(sub in speech for sub in ZE):
         ZEEC = str('ZEEC')
         print(ZEEC)
         say('Did you want to go to ' + ZE[0])
-        if yes_no():
+        check = yes_no()
+        if check == True:
             say('Proceeding to ' + ZE[0] + ' please follow me.')
-            goal = 'ZEEC'
-            mission = True
-    if speech in AD:
+            return 'ZEEC', True
+        else:
+            return None, False
+    elif any(sub in speech for sub in AD):
         ADMM = str('ADMM')
         print(ADMM)
         say('Did you want to go to ' + AD[0])
-        if yes_no():
+        check = yes_no()
+        if check == True:
             say('Proceeding to ' + AD[0] + ' please follow me.')
-            goal = 'ADMM'
-            mission = True
+            return 'ADMM', True
+        else:
+            return None, False
     else:
         print('not valid')
+        return None, False
 
 # checks if a user has said 'Hey vale'
 def hey_Vale(speech):
     hey_checker = {'hey', 'hay'}
     Vale_checker = {'veil', 'vale', }
-    if speech in hey_checker and speech in Vale_checker:
+    if any(i in speech for i in hey_checker) and any(j in speech for j in Vale_checker):
         return True
         say('Hey User')
     else:
@@ -159,10 +170,15 @@ def command_check(speech):
 
 # this is the function for yes or no input
 def yes_no():
-    speech = speech2text(r, talk)
-    if speech == 'yes' or speech == 'yeah':
+    val = speech2text(r, talk)
+    if val == 'Yes' or val == "yes":
+        print("User said yes.")
         return True
+    elif val == 'No' or val == 'no':
+        print("User said no")
+        return False
     else:
+        print("Invalid input.")
         return False
 
 def reroute():  # reroutes gps
@@ -174,3 +190,5 @@ if __name__ == '__main__':
         speech = speech2text(r, talk)
         # speech is the user input
         user_input(speech)
+
+
