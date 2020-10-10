@@ -16,10 +16,10 @@ class Bearing(object):
     #'dest' is TAMU defined building name acronym
     #initialization method receives target building acronym and finds its closest entrance
     #init then calls API to get waypts between current location and destination
-    def __init__(self, dest, location):
+    def __init__(self, dest):
         #self.getLoc()
         #Current location in the form of a Shapely point
-        self.currentLoc = location
+        self.currentLoc = Point(30.617073,-96.341687)  # entrance to the PIC
         self.arrived = False
         #find closest entrance to target building
         lengths = [] #list to hold distances
