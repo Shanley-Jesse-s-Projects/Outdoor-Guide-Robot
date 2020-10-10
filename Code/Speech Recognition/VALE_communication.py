@@ -14,22 +14,22 @@ talk = sr.Microphone(device_index=None)
 
 # these dictonaries hold valid building destinations for VALE
 
-AC = {'academic building', 'the academic building'}
+AC = ['academic building', 'the academic building']
 
-FER = {'fermier', 'premier', 'premiere', 'Vermeer'}
+FER = ['fermier', 'premier', 'premiere', 'Vermeer']
 
-TH = {'Thompson'}
+TH = ['Thompson']
 
-ZE = {'Zachary engineering education complex', 'Zachary',
-      'Zach', 'Zachary engineering complex'}
+ZE = ['Zachary engineering education complex', 'Zachary',
+      'Zach', 'Zachary engineering complex']
 
-AD = {'administrative building'}
+AD = ['administrative building']
 
 
 # this is the function that gets speech input
 def speech2text(r, talk):
     with talk as source:
-        print('say something!…')
+        print('Say something…')
         audio = r.adjust_for_ambient_noise(source)
         audio = r.listen(source)
     try:
@@ -42,22 +42,18 @@ def speech2text(r, talk):
         print('Could not request results from Google Speech Recognition service; {0}'.format(e))
 
 
-# this is where the first input it asked
+#introduce Vale
 def begin():
-    speech = str(
-        'Welcome to VALE the autonomous guidebot of the future! Please state name of the building you would like to go to.'
-        'If you need to stop at any point please say stop and say go when vale can resume.')
-    os.system('echo \'' + speech + '\' | festival --tts')
+    say('Welcome to VALE the autonomous guidebot of the future!')
 
 #method to make Vale say something
 def say(speech):
     os.system('echo \'' + speech + '\' | festival --tts')
 
 # return building code for the API search
-def check_bldg(speech, goal, mission):
+def check_bldg(speech):
     if any(sub in speech for sub in AC):
-        ACAD = str('ACAD')
-        print(ACAD)
+        print('ACAD')
         say('Did you want to go to ' + AC[0])
         check = yes_no()
         if check == True:
@@ -66,8 +62,7 @@ def check_bldg(speech, goal, mission):
         else:
             return None, False
     elif any(sub in speech for sub in FER):
-        FERM = str('FERM')
-        print(FERM)
+        print('FERM')
         say('Did you want to go to ' + FER[0])
         check = yes_no()
         if check == True:
@@ -76,8 +71,7 @@ def check_bldg(speech, goal, mission):
         else:
             return None, False
     elif any(sub in speech for sub in TH):
-        THOM = str('THOM')
-        print(THOM)
+        print('THOM')
         say('Did you want to go to ' + TH[0])
         check = yes_no()
         if check == True:
@@ -86,8 +80,7 @@ def check_bldg(speech, goal, mission):
         else:
             return None, False
     elif any(sub in speech for sub in ZE):
-        ZEEC = str('ZEEC')
-        print(ZEEC)
+        print('ZEEC')
         say('Did you want to go to ' + ZE[0])
         check = yes_no()
         if check == True:
@@ -96,8 +89,7 @@ def check_bldg(speech, goal, mission):
         else:
             return None, False
     elif any(sub in speech for sub in AD):
-        ADMM = str('ADMM')
-        print(ADMM)
+        print('ADMM')
         say('Did you want to go to ' + AD[0])
         check = yes_no()
         if check == True:
@@ -106,89 +98,61 @@ def check_bldg(speech, goal, mission):
         else:
             return None, False
     else:
-        print('not valid')
+        print('Input not valid.')
         return None, False
 
 # checks if a user has said 'Hey vale'
 def hey_Vale(speech):
-    hey_checker = {'hey', 'hay'}
-    Vale_checker = {'veil', 'vale', }
-    if any(i in speech for i in hey_checker) and any(j in speech for j in Vale_checker):
-        return True
+    hey_checker = ['hey', 'hay']
+    Vale_checker = ['veil', 'vale','Vail', 'bail', 'bale']
+    if any(i in speech for i in hey_checker): # and any(j in speech for j in Vale_checker):
         say('Hey User')
+        return True
     else:
         return False
 
-# checks to make sure the user input is valid
-def user_input(speech):
-    building_check = {'the academic building', 'academic building', 'Zachary', 'premiere', 'fermier',
-             'Fermier', 'Zachary engineering building', 'Thompson', 'Zachary engineering complex', 'Zach', 'Vermeer'
-             }
-    why = speech
-    if speech in check:
-        question = str('Did you want to go to the')
-        q = str('Say yes or no.')
-        os.system('echo \'' + question + why + q + '\' | festival --tts')
-        yes_no()
-    else:
-        speech = str('Invalid input.')
-        os.system('echo \'' + speech + '\' | festival --tts')
-        return
-
 #checks if the user has inputted a command to Vale
 def command_check(speech):
-    commands_check = {'stop', 'go', 'resume', 'change', 'reroute','off','deactivate'}
-    if speech in check:
-        say('Command received.')
-        if speech in 'stop':
-            # stop motor
-            say('Stoppping.')
-            return 'stop'
-
-        if speech in 'go' or speech in 'resume':
-            # resume travel
-            say('Resuming travel.')
-            return 'resume'
-
-        if speech in 'change' or speech in 'reroute':
-            # change destination
-            say('One moment. Cleaning out old navigation data.')
-            return 'reroute'
-
-        if speech in 'end' or speech in 'done':
-            # user is done with travel
-            say('Vale was happy to guide you. Have a pleasant day.')
-            return 'end'
-
-        if speech in 'off' or speech in 'deactivate':
-            # cancel movement and turn off Vale
-            say('Deactivating. Thank you for using the Vale autonomous guide!')
-            return 'deactivate'
-
+    if speech in 'stop':
+        # stop motor
+        say('Stoppping.')
+        return 'stop'
+    elif speech in 'go' or speech in 'resume':
+        # resume travel
+        say('Resuming travel.')
+        return 'resume'
+    elif speech in 'change' or speech in 'reroute':
+        # change destination
+        say('One moment. Cleaning out old navigation data.')
+        return 'reroute'
+    elif speech in 'end' or speech in 'done':
+        # user is done with travel
+        say('Vale was happy to guide you. Have a pleasant day.')
+        return 'end'
+    elif speech in 'off' or speech in 'deactivate':
+        # cancel movement and turn off Vale
+        say('Deactivating. Thank you for using the Vale autonomous guide!')
+        return 'deactivate'
     else:
         say('Invalid input.')
 
 # this is the function for yes or no input
 def yes_no():
+    yesses = ['yes', 'yeah', 'affirmative', 'correct']
+    nos = ['no', 'wrong']
     val = speech2text(r, talk)
-    if val == 'Yes' or val == "yes":
+    if any(i in val for i in yesses):
         print("User said yes.")
         return True
-    elif val == 'No' or val == 'no':
-        print("User said no")
+    elif any(i in val for i in nos):
+        print("User said no.")
         return False
     else:
         print("Invalid input.")
         return False
 
-def reroute():  # reroutes gps
-    s = str('Rerouting, please wait')
-    os.system('echo \'' + s + '\' | festival --tts')
-
 if __name__ == '__main__':
     while(1):
         speech = speech2text(r, talk)
         # speech is the user input
-        user_input(speech)
-
-
+        check_bldg()
