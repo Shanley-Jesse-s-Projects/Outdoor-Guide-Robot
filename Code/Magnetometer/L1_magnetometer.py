@@ -1,3 +1,6 @@
+#Author: Jesse Rosart-Brodnitz
+#Contact: jorbaustin@gmail.com
+
 #function to read magnetometer over I2C
 #returns unfiltered xyz
 #address is 0x1e
