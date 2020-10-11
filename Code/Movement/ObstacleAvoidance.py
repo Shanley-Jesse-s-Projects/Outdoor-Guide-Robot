@@ -1,5 +1,8 @@
 #primary obstacle avoidance for VALE
 #utilizes open loop drive and bounding circles
+#Author: Jesse Rosart-Brodnitz
+#Contact: jorbaustin@gmail.com
+
 
 import L2_vector as vector
 import numpy as np
