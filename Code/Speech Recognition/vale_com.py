@@ -3,6 +3,8 @@
 # if running for the first time pip install pyaudio
 # make sure the correct microphone is selected run sudo raspi-config, then select advanced, then mic
 # the purpose of this code is to go through the valid user inputs for building input
+#This code was written by: Shanley Mullen
+#email: shanleymullen@gmail.com
 import os
 import speech_recognition as sr
 
