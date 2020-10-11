@@ -1,3 +1,6 @@
+#Author: Jesse Rosart-Brodnitz
+#Contact: jorbaustin@gmail.com
+
 #Level 1 lidar scanning code. This uses ethernet to communicate with the TiM 781 and 561
 #this code replaces the L1_lidar code and can be used in place.
 #Any level 2 code that imports the L1_lidar should be updated with newLidarScan instead
