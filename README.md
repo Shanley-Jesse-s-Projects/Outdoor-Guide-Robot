@@ -24,4 +24,7 @@ Hardware required:
 		
 VALE Utilizes the S.C.U.T.T.L.E robot base. 
 https://mxet.github.io/SCUTTLE/
+
+A presentation video can be here:
+https://youtu.be/g2iTKxHrYNU
 		
