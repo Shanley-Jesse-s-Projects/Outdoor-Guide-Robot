@@ -1,3 +1,7 @@
+
+#This code adapted from the Scuttle Library and altered by Jesse Rosart-Brodnitz
+#Author: Jesse Rosart-Brodnitz
+#Contact: jorbaustin@gmail.com
 #Motor Overide for glitches and motor emergency stop
 #primarily used to deal with the GPIO pins resetting 
 # This example sends commands to two motors on the appropriate pins for H-bridge
