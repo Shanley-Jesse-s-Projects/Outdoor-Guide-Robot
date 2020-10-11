@@ -1,3 +1,6 @@
+#Author: Jesse Rosart-Brodnitz
+#Contact: jorbaustin@gmail.com
+
 # movement.py          In Progress
 
 # Code purpose: Closed loop driving based on heading deviances.
