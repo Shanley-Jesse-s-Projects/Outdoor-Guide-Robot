@@ -1,3 +1,6 @@
+#File imported from MXET 300 and altered by Jesse Rosart-Brodnitz
+#Contact: Jorbaustin@gmail.com
+
 # This program takes the magnetometer values from the compass program
 # and computes a heading. The heading describes the y-vector of the robot
 # minus the magnetic North vector.
