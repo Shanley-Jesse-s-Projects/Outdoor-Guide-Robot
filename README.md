@@ -4,6 +4,8 @@
 
 Guide Robot for Texas A&amp;M University Capstone
 
+Members: Shanley Mullen, Jesse Rosart-Brodnitz, Evan Maraist, Austin Heibel
+
 VALE is an Outdoor guide obot that can lead a user to a building on campus based on Google API Integration.
 
 The system utilizes GPS integration, speech recognition, obstacle avoidance, and a cellular connection. 
