@@ -7,7 +7,7 @@ from geo_Data import NoGo, Destinations
 from datetime import datetime
 import googlemaps
 
-gmaps = googlemaps.Client(key='AIzaSyD_8UslXeU3SmCAFmnHzqj4FgdlVAib_z8')
+gmaps = googlemaps.Client(key='enter key here')
 
 # Insure findDir, geo_Data, GPS, and magnetometer custom files are installed
 # Insure Shapely library is installed
